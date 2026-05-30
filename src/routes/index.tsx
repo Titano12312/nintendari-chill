@@ -14,7 +14,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Entra nel server Discord italiano dedicato alle vecchie console: NES, SNES, Mega Drive, PS1, Game Boy e tutto il retrogaming. Community nata il 20 luglio 2025.",
+          "Entra nel server Discord italiano dedicato alle vecchie console: Wii, Wii U, 3DS, Xbox 360, PS3 e tutto il retrogaming. Community nata il 20 luglio 2025.",
       },
       { property: "og:title", content: "I Nintendari Chill — Retro Gaming Discord" },
       {
@@ -154,9 +154,9 @@ function Index() {
             <p className="font-mono text-xl mt-6 text-muted-foreground leading-relaxed">
               I Nintendari Chill è nato il{" "}
               <span className="text-foreground">20 luglio 2025</span> con un'idea
-              semplice: creare uno spazio italiano dove parlare di console vecchie
-              senza nostalgia finta. NES, SNES, Mega Drive, PS1, Game Boy, Dreamcast —
-              tutto quello che ha fatto la storia del videogioco.
+              semplice: creare uno spazio italiano dove parlare delle console di una
+              volta senza nostalgia finta. Wii, Wii U, 3DS, Xbox 360, PS3 — la
+              generazione che ha cresciuto un'intera community.
             </p>
             <p className="font-mono text-xl mt-4 text-muted-foreground leading-relaxed">
               Server di questo tipo in Italia ne esistono pochissimi. Noi siamo uno di
@@ -164,13 +164,12 @@ function Index() {
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <Cartridge label="NES" color="oklch(0.55 0.2 25)" />
-            <Cartridge label="SNES" color="oklch(0.5 0.15 270)" />
-            <Cartridge label="SEGA" color="oklch(0.45 0.18 250)" />
-            <Cartridge label="GB" color="oklch(0.65 0.18 130)" />
-            <Cartridge label="PS1" color="oklch(0.35 0.05 280)" />
-            <Cartridge label="N64" color="oklch(0.55 0.2 50)" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <Cartridge label="WII" color="oklch(0.95 0.02 240)" />
+            <Cartridge label="WII U" color="oklch(0.75 0.15 220)" />
+            <Cartridge label="3DS" color="oklch(0.55 0.22 25)" />
+            <Cartridge label="XBOX 360" color="oklch(0.65 0.2 145)" />
+            <Cartridge label="PS3" color="oklch(0.25 0.03 280)" />
           </div>
         </div>
       </section>
