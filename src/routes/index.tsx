@@ -4,22 +4,22 @@ const DISCORD = "https://discord.gg/Hw5m2G6pe";
 const TIKTOK_SERVER = "https://www.tiktok.com/@gliamici_pazzi12";
 const TIKTOK_FREEZER = "https://www.tiktok.com/@freezertime2000";
 const EMAIL = "u8826144619@gmail.com";
-const MAILTO = `mailto:${EMAIL}?subject=${encodeURIComponent("Contatto dal sito - Gli Amici Pazzi")}`;
+const MAILTO = `mailto:${EMAIL}?subject=${encodeURIComponent("Contatto dal sito - I Nintendari Chill")}`;
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Gli Amici Pazzi — Server Discord dedicato alle vecchie console" },
+      { title: "I Nintendari Chill — Server Discord dedicato alle vecchie console" },
       {
         name: "description",
         content:
           "Entra nel server Discord italiano dedicato alle vecchie console: NES, SNES, Mega Drive, PS1, Game Boy e tutto il retrogaming. Community nata il 20 luglio 2025.",
       },
-      { property: "og:title", content: "Gli Amici Pazzi — Retro Gaming Discord" },
+      { property: "og:title", content: "I Nintendari Chill — Retro Gaming Discord" },
       {
         property: "og:description",
         content:
-          "Una delle poche community italiane Discord dedicate alle vecchie console. Unisciti agli amici pazzi!",
+          "Una delle poche community italiane Discord dedicate alle vecchie console. Unisciti ai Nintendari Chill!",
       },
       { property: "og:type", content: "website" },
     ],
@@ -87,10 +87,10 @@ function Index() {
       <header className="relative z-10 max-w-6xl mx-auto px-6 pt-8 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-primary text-primary-foreground grid place-items-center font-display text-sm pixel-border">
-            AP
+            NC
           </div>
           <span className="font-display text-xs sm:text-sm text-primary text-glow">
-            GLI AMICI PAZZI
+            I NINTENDARI CHILL
           </span>
         </div>
         <nav className="hidden md:flex gap-6 font-mono text-lg">
@@ -105,11 +105,11 @@ function Index() {
         <p className="font-mono text-accent text-xl mb-4">
           <span className="blink">▶</span> INSERT COIN — PRESS START
         </p>
-        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl leading-tight text-foreground">
-          <span className="text-primary text-glow">GLI AMICI</span>
+        <h1 className="font-display text-2xl sm:text-4xl md:text-5xl leading-tight text-foreground">
+          <span className="text-primary text-glow">I NINTENDARI</span>
           <br />
-          <span className="text-magenta text-glow" style={{ color: "oklch(0.7 0.28 340)" }}>
-            PAZZI
+          <span className="text-glow" style={{ color: "oklch(0.7 0.28 340)" }}>
+            CHILL
           </span>
         </h1>
         <p className="mt-8 max-w-2xl mx-auto font-mono text-xl text-muted-foreground">
@@ -151,7 +151,7 @@ function Index() {
               UNA COMMUNITY RARA IN ITALIA
             </h2>
             <p className="font-mono text-xl mt-6 text-muted-foreground leading-relaxed">
-              Gli Amici Pazzi è nato il{" "}
+              I Nintendari Chill è nato il{" "}
               <span className="text-foreground">20 luglio 2025</span> con un'idea
               semplice: creare uno spazio italiano dove parlare di console vecchie
               senza nostalgia finta. NES, SNES, Mega Drive, PS1, Game Boy, Dreamcast —
@@ -206,7 +206,7 @@ function Index() {
         <div className="bg-primary text-primary-foreground p-10 pixel-border text-center">
           <h3 className="font-display text-lg sm:text-2xl">PRONTO A PREMERE START?</h3>
           <p className="font-mono text-xl mt-4">
-            Unisciti agli amici pazzi su Discord. È gratis, è italiano, è retro.
+            Unisciti ai Nintendari Chill su Discord. È gratis, è italiano, è retro.
           </p>
           <a
             href={DISCORD}
@@ -291,7 +291,7 @@ function Index() {
       <footer className="relative z-10 max-w-6xl mx-auto px-6 py-12 border-t-2 border-border mt-10">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="font-mono text-base text-muted-foreground">
-            © 2025 Gli Amici Pazzi — dal 20 luglio 2025
+            © 2025 I Nintendari Chill — dal 20 luglio 2025
           </p>
           <p className="font-mono text-base text-muted-foreground">
             Sito realizzato da{" "}
