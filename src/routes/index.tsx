@@ -291,7 +291,7 @@ function Index() {
       <footer className="relative z-10 max-w-6xl mx-auto px-6 py-12 border-t-2 border-border mt-10">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="font-mono text-base text-muted-foreground">
-            © 2025 Gli Amici Pazzi — dal 20 luglio 2025
+            © 2025 I Nintendari Chill — dal 20 luglio 2025
           </p>
           <p className="font-mono text-base text-muted-foreground">
             Sito realizzato da{" "}
