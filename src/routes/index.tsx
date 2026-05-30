@@ -151,7 +151,7 @@ function Index() {
               UNA COMMUNITY RARA IN ITALIA
             </h2>
             <p className="font-mono text-xl mt-6 text-muted-foreground leading-relaxed">
-              Gli Amici Pazzi è nato il{" "}
+              I Nintendari Chill è nato il{" "}
               <span className="text-foreground">20 luglio 2025</span> con un'idea
               semplice: creare uno spazio italiano dove parlare di console vecchie
               senza nostalgia finta. NES, SNES, Mega Drive, PS1, Game Boy, Dreamcast —
