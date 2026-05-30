@@ -9,17 +9,17 @@ const MAILTO = `mailto:${EMAIL}?subject=${encodeURIComponent("Contatto dal sito 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Gli Amici Pazzi — Server Discord dedicato alle vecchie console" },
+      { title: "I Nintendari Chill — Server Discord dedicato alle vecchie console" },
       {
         name: "description",
         content:
           "Entra nel server Discord italiano dedicato alle vecchie console: NES, SNES, Mega Drive, PS1, Game Boy e tutto il retrogaming. Community nata il 20 luglio 2025.",
       },
-      { property: "og:title", content: "Gli Amici Pazzi — Retro Gaming Discord" },
+      { property: "og:title", content: "I Nintendari Chill — Retro Gaming Discord" },
       {
         property: "og:description",
         content:
-          "Una delle poche community italiane Discord dedicate alle vecchie console. Unisciti agli amici pazzi!",
+          "Una delle poche community italiane Discord dedicate alle vecchie console. Unisciti ai Nintendari Chill!",
       },
       { property: "og:type", content: "website" },
     ],
