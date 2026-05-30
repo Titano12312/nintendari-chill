@@ -105,11 +105,11 @@ function Index() {
         <p className="font-mono text-accent text-xl mb-4">
           <span className="blink">▶</span> INSERT COIN — PRESS START
         </p>
-        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl leading-tight text-foreground">
-          <span className="text-primary text-glow">GLI AMICI</span>
+        <h1 className="font-display text-2xl sm:text-4xl md:text-5xl leading-tight text-foreground">
+          <span className="text-primary text-glow">I NINTENDARI</span>
           <br />
-          <span className="text-magenta text-glow" style={{ color: "oklch(0.7 0.28 340)" }}>
-            PAZZI
+          <span className="text-glow" style={{ color: "oklch(0.7 0.28 340)" }}>
+            CHILL
           </span>
         </h1>
         <p className="mt-8 max-w-2xl mx-auto font-mono text-xl text-muted-foreground">
