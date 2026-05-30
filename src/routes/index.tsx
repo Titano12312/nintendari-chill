@@ -4,7 +4,7 @@ const DISCORD = "https://discord.gg/Hw5m2G6pe";
 const TIKTOK_SERVER = "https://www.tiktok.com/@gliamici_pazzi12";
 const TIKTOK_FREEZER = "https://www.tiktok.com/@freezertime2000";
 const EMAIL = "u8826144619@gmail.com";
-const MAILTO = `mailto:${EMAIL}?subject=${encodeURIComponent("Contatto dal sito - Gli Amici Pazzi")}`;
+const MAILTO = `mailto:${EMAIL}?subject=${encodeURIComponent("Contatto dal sito - I Nintendari Chill")}`;
 
 export const Route = createFileRoute("/")({
   head: () => ({
