@@ -206,7 +206,7 @@ function Index() {
         <div className="bg-primary text-primary-foreground p-10 pixel-border text-center">
           <h3 className="font-display text-lg sm:text-2xl">PRONTO A PREMERE START?</h3>
           <p className="font-mono text-xl mt-4">
-            Unisciti agli amici pazzi su Discord. È gratis, è italiano, è retro.
+            Unisciti ai Nintendari Chill su Discord. È gratis, è italiano, è retro.
           </p>
           <a
             href={DISCORD}
