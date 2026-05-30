@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import logoImg from "@/assets/logo-wii.jpg";
 
 const DISCORD = "https://discord.gg/Hw5m2G6pe";
 const TIKTOK_SERVER = "https://www.tiktok.com/@gliamici_pazzi12";
@@ -86,8 +87,8 @@ function Index() {
       {/* NAV */}
       <header className="relative z-10 max-w-6xl mx-auto px-6 pt-8 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary text-primary-foreground grid place-items-center font-display text-sm pixel-border">
-            NC
+          <div className="w-10 h-10 overflow-hidden pixel-border">
+            <img src={logoImg} alt="I Nintendari Chill" className="w-full h-full object-cover" />
           </div>
           <span className="font-display text-xs sm:text-sm text-primary text-glow">
             I NINTENDARI CHILL
