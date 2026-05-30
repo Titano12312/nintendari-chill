@@ -87,10 +87,10 @@ function Index() {
       <header className="relative z-10 max-w-6xl mx-auto px-6 pt-8 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-primary text-primary-foreground grid place-items-center font-display text-sm pixel-border">
-            AP
+            NC
           </div>
           <span className="font-display text-xs sm:text-sm text-primary text-glow">
-            GLI AMICI PAZZI
+            I NINTENDARI CHILL
           </span>
         </div>
         <nav className="hidden md:flex gap-6 font-mono text-lg">
