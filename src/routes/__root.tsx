@@ -77,18 +77,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "I Nintendari Chill" },
-      { name: "description", content: "Unisciti ai Nintendari Chill su Discord!" },
+      { title: "Lovable App" },
+      { name: "description", content: "Lovable Generated Project" },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "I Nintendari Chill" },
-      { property: "og:description", content: "Unisciti ai Nintendari Chill su Discord!" },
+      { property: "og:title", content: "Lovable App" },
+      { property: "og:description", content: "Lovable Generated Project" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "I Nintendari Chill" },
-      { name: "twitter:description", content: "Unisciti ai Nintendari Chill su Discord!" },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/wApvCcZfjzM7No4Ofsfg0cHfPgA3/social-images/social-1780175330169-Screenshot_20260530_222910_Gallery.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/wApvCcZfjzM7No4Ofsfg0cHfPgA3/social-images/social-1780175330169-Screenshot_20260530_222910_Gallery.webp" },
     ],
     links: [
       {
