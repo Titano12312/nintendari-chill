@@ -95,9 +95,18 @@ function Index() {
             I NINTENDARI CHILL
           </span>
         </div>
-        <nav className="hidden md:flex gap-6 font-mono text-lg">
+        <nav className="hidden md:flex gap-6 font-mono text-lg items-center">
           <a href="#about" className="hover:text-primary transition">Server</a>
           <a href="#features" className="hover:text-primary transition">Cosa facciamo</a>
+          <a
+            href="https://nintendariranking.pages.dev/"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-2 hover:text-primary transition"
+          >
+            <Trophy size={18} />
+            Classifiche
+          </a>
           <a href="#contatti" className="hover:text-primary transition">Contatti</a>
         </nav>
       </header>
