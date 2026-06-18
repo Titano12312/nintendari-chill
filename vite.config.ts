@@ -12,4 +12,9 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Build output targets Cloudflare Pages (Pages Functions via _worker.js).
+  // Override with NITRO_PRESET env var if needed.
+  nitro: {
+    preset: process.env.NITRO_PRESET ?? "cloudflare-pages",
+  },
 });
