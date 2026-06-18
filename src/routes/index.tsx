@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Trophy } from "lucide-react";
 import logoImg from "@/assets/logo-wii.jpg";
 
 const DISCORD = "https://discord.gg/Hw5m2G6pe";
