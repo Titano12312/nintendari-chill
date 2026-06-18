@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Trophy } from "lucide-react";
 import logoImg from "@/assets/logo-wii.jpg";
 
 const DISCORD = "https://discord.gg/Hw5m2G6pe";
@@ -94,9 +95,18 @@ function Index() {
             I NINTENDARI CHILL
           </span>
         </div>
-        <nav className="hidden md:flex gap-6 font-mono text-lg">
+        <nav className="hidden md:flex gap-6 font-mono text-lg items-center">
           <a href="#about" className="hover:text-primary transition">Server</a>
           <a href="#features" className="hover:text-primary transition">Cosa facciamo</a>
+          <a
+            href="https://nintendariranking.pages.dev/"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-2 hover:text-primary transition"
+          >
+            <Trophy size={18} />
+            Classifiche
+          </a>
           <a href="#contatti" className="hover:text-primary transition">Contatti</a>
         </nav>
       </header>
@@ -198,6 +208,41 @@ function Index() {
               <p className="font-mono text-lg text-muted-foreground">{f.d}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* RANKING */}
+      <section id="ranking" className="relative z-10 max-w-6xl mx-auto px-6 py-20">
+        <div className="relative overflow-hidden border-2 border-primary p-8 sm:p-12 text-center box-glow">
+          {/* racing stripes background */}
+          <div
+            className="absolute inset-0 opacity-10 pointer-events-none"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(135deg, oklch(0.85 0.22 145) 0px, oklch(0.85 0.22 145) 12px, transparent 12px, transparent 24px)",
+            }}
+          />
+          <div className="relative z-10">
+            <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground">
+              <Trophy size={32} />
+            </div>
+            <p className="font-mono text-accent text-lg">// COMPETIZIONE</p>
+            <h2 className="font-display text-2xl sm:text-3xl mt-3 text-primary text-glow">
+              CLASSIFICHE UFFICIALI SERVER
+            </h2>
+            <p className="font-mono text-xl mt-6 max-w-2xl mx-auto text-muted-foreground leading-relaxed">
+              Consulta le classifiche, confronta i tuoi punteggi e scala le
+              posizioni tra i migliori giocatori della community.
+            </p>
+            <a
+              href="https://nintendariranking.pages.dev/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-block mt-8 font-display text-xs sm:text-sm px-10 py-5 bg-primary text-primary-foreground pixel-border hover:translate-y-[-2px] transition-transform"
+            >
+              ▸ VEDI LA CLASSIFICA
+            </a>
+          </div>
         </div>
       </section>
 
