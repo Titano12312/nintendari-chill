@@ -14,7 +14,65 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      review_replies: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_staff: boolean
+          nickname: string
+          review_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_staff?: boolean
+          nickname: string
+          review_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_staff?: boolean
+          nickname?: string
+          review_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_replies_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          nickname: string
+          rating: number
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          nickname: string
+          rating: number
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          nickname?: string
+          rating?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
