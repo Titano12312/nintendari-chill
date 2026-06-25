@@ -107,6 +107,10 @@ function Index() {
             <Trophy size={18} />
             Classifiche
           </a>
+          <Link to="/recensioni" className="flex items-center gap-2 hover:text-primary transition">
+            <MessageSquare size={18} />
+            Recensioni
+          </Link>
           <a href="#contatti" className="hover:text-primary transition">Contatti</a>
         </nav>
       </header>
