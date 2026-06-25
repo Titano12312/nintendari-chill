@@ -349,12 +349,11 @@ function ReplyForm({
     if (!nick) return setError("Inserisci un nickname.");
     if (!text) return setError("Scrivi una risposta.");
     setSubmitting(true);
-    const is_staff = nick.toUpperCase() === STAFF_NICK;
     const { error } = await supabase.from("review_replies").insert({
       review_id: reviewId,
       nickname: nick.slice(0, 40),
       content: text,
-      is_staff,
+      is_staff: false,
     });
     setSubmitting(false);
     if (error) return setError("Errore: " + error.message);
