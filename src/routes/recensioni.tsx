@@ -232,10 +232,6 @@ function RecensioniPage() {
             {submitting ? "INVIO..." : "PUBBLICA"}
           </button>
 
-          <p className="font-mono text-[10px] text-muted-foreground">
-            Suggerimento: se fai parte dello staff, usa il nickname{" "}
-            <span className="text-accent">NINTENDARI</span> per rispondere ufficialmente.
-          </p>
         </form>
       </section>
 
