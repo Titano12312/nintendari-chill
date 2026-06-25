@@ -283,7 +283,7 @@ function RecensioniPage() {
                           <span className="font-display text-xs text-primary">
                             {rep.nickname}
                           </span>
-                          {rep.is_staff && (
+                          {rep.nickname.trim().toUpperCase() === STAFF_NICK && (
                             <span className="font-mono text-[10px] px-2 py-0.5 bg-accent text-accent-foreground flex items-center gap-1">
                               <Shield size={10} /> STAFF
                             </span>
