@@ -283,7 +283,7 @@ function RecensioniPage() {
                           <span className="font-display text-xs text-primary">
                             {rep.nickname}
                           </span>
-                          {rep.is_staff && (
+                          {rep.nickname.trim().toUpperCase() === STAFF_NICK && (
                             <span className="font-mono text-[10px] px-2 py-0.5 bg-accent text-accent-foreground flex items-center gap-1">
                               <Shield size={10} /> STAFF
                             </span>
@@ -349,12 +349,11 @@ function ReplyForm({
     if (!nick) return setError("Inserisci un nickname.");
     if (!text) return setError("Scrivi una risposta.");
     setSubmitting(true);
-    const is_staff = nick.toUpperCase() === STAFF_NICK;
     const { error } = await supabase.from("review_replies").insert({
       review_id: reviewId,
       nickname: nick.slice(0, 40),
       content: text,
-      is_staff,
+      is_staff: false,
     });
     setSubmitting(false);
     if (error) return setError("Errore: " + error.message);
