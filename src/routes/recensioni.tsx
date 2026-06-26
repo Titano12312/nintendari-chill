@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
-import { Star, Send, MessageSquare, ArrowLeft, Shield } from "lucide-react";
+import { Star, Send, MessageSquare, ArrowLeft, Shield, LogOut, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import type { Session } from "@supabase/supabase-js";
 import logoImg from "@/assets/logo-wii.jpg";
 
-const STAFF_NICK = "NINTENDARI";
+const ADMIN_EMAIL = "u8826144619@gmail.com";
 
 export const Route = createFileRoute("/recensioni")({
   head: () => ({
@@ -13,12 +14,12 @@ export const Route = createFileRoute("/recensioni")({
       {
         name: "description",
         content:
-          "Lascia la tua recensione sul server Discord I Nintendari Chill. Scegli un nickname, assegna le stelle e racconta la tua esperienza.",
+          "Lascia la tua recensione sul server Discord I Nintendari Chill. Registrati con email e password per pubblicare la tua esperienza.",
       },
       { property: "og:title", content: "Recensioni — I Nintendari Chill" },
       {
         property: "og:description",
-        content: "Recensioni della community e risposte ufficiali dello staff Nintendari.",
+        content: "Recensioni della community verificate via email.",
       },
     ],
   }),
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/recensioni")({
 
 type Review = {
   id: string;
+  user_id: string;
   nickname: string;
   rating: number;
   content: string;
@@ -36,6 +38,7 @@ type Review = {
 type Reply = {
   id: string;
   review_id: string;
+  user_id: string;
   nickname: string;
   content: string;
   is_staff: boolean;
@@ -85,15 +88,42 @@ function formatDate(iso: string) {
 }
 
 function RecensioniPage() {
+  const [session, setSession] = useState<Session | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [nicknameMe, setNicknameMe] = useState<string>("");
+
   const [reviews, setReviews] = useState<Review[]>([]);
   const [replies, setReplies] = useState<Reply[]>([]);
   const [loading, setLoading] = useState(true);
-  const [nickname, setNickname] = useState("");
+
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [replyOpen, setReplyOpen] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!session) {
+      setIsAdmin(false);
+      setNicknameMe("");
+      return;
+    }
+    setIsAdmin(session.user.email === ADMIN_EMAIL);
+    supabase
+      .from("profiles")
+      .select("nickname")
+      .eq("id", session.user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data?.nickname) setNicknameMe(data.nickname);
+      });
+  }, [session]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -110,28 +140,48 @@ function RecensioniPage() {
     load();
   }, [load]);
 
+  const myReview = session ? reviews.find((r) => r.user_id === session.user.id) : undefined;
+
   const submitReview = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    const nick = nickname.trim();
+    if (!session) return setError("Devi accedere per lasciare una recensione.");
+    if (myReview) return setError("Hai già pubblicato una recensione.");
     const text = content.trim();
-    if (!nick) return setError("Inserisci un nickname.");
     if (rating < 1 || rating > 5) return setError("Scegli un punteggio da 1 a 5 stelle.");
     if (!text) return setError("Scrivi la tua recensione.");
     if (text.length > 1000) return setError("Recensione troppo lunga (max 1000 caratteri).");
 
     setSubmitting(true);
     const { error } = await supabase.from("reviews").insert({
-      nickname: nick.slice(0, 40),
+      user_id: session.user.id,
+      nickname: (nicknameMe || session.user.email || "Utente").slice(0, 40),
       rating,
       content: text,
     });
     setSubmitting(false);
     if (error) return setError("Errore nell'invio: " + error.message);
-    setNickname("");
     setRating(0);
     setContent("");
     load();
+  };
+
+  const deleteReview = async (id: string) => {
+    if (!confirm("Eliminare questa recensione?")) return;
+    const { error } = await supabase.from("reviews").delete().eq("id", id);
+    if (error) return alert("Errore: " + error.message);
+    load();
+  };
+
+  const deleteReply = async (id: string) => {
+    if (!confirm("Eliminare questa risposta?")) return;
+    const { error } = await supabase.from("review_replies").delete().eq("id", id);
+    if (error) return alert("Errore: " + error.message);
+    load();
+  };
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
   };
 
   const repliesFor = (reviewId: string) => replies.filter((r) => r.review_id === reviewId);
@@ -155,84 +205,92 @@ function RecensioniPage() {
             I NINTENDARI CHILL
           </span>
         </Link>
-        <Link
-          to="/"
-          className="flex items-center gap-2 font-mono text-sm hover:text-primary transition"
-        >
-          <ArrowLeft size={16} />
-          Home
-        </Link>
+        <div className="flex items-center gap-4">
+          {session && (
+            <button
+              onClick={signOut}
+              className="font-mono text-xs flex items-center gap-1 hover:text-primary transition"
+            >
+              <LogOut size={14} /> Esci
+            </button>
+          )}
+          <Link to="/" className="flex items-center gap-2 font-mono text-sm hover:text-primary transition">
+            <ArrowLeft size={16} /> Home
+          </Link>
+        </div>
       </header>
 
       <section className="relative z-10 max-w-4xl mx-auto px-6 pt-12 pb-8 text-center">
         <p className="font-mono text-accent text-lg mb-3">
           <span className="blink">▶</span> PLAYER FEEDBACK
         </p>
-        <h1 className="font-display text-2xl sm:text-4xl text-primary text-glow">
-          RECENSIONI
-        </h1>
+        <h1 className="font-display text-2xl sm:text-4xl text-primary text-glow">RECENSIONI</h1>
         <p className="mt-6 max-w-2xl mx-auto font-mono text-base text-muted-foreground">
-          Racconta la tua esperienza nel server. Scegli un nickname, assegna le stelle e
-          condividi il tuo pensiero. Lo staff{" "}
-          <span className="text-accent">NINTENDARI</span> può risponderti direttamente qui.
+          Registrati con email e password, conferma l'indirizzo e lascia la tua recensione.
+          Una sola recensione per utente.
         </p>
+        {session && (
+          <p className="mt-4 font-mono text-xs text-muted-foreground">
+            Accesso effettuato come{" "}
+            <span className="text-primary">{nicknameMe || session.user.email}</span>
+            {isAdmin && (
+              <span className="ml-2 px-2 py-1 bg-accent text-accent-foreground text-[10px]">
+                ADMIN
+              </span>
+            )}
+          </p>
+        )}
       </section>
 
-      {/* FORM */}
+      {/* AUTH or REVIEW FORM */}
       <section className="relative z-10 max-w-3xl mx-auto px-6 pb-12">
-        <form
-          onSubmit={submitReview}
-          className="pixel-border p-6 bg-card/60 backdrop-blur space-y-5"
-        >
-          <h2 className="font-display text-base text-primary">LASCIA UNA RECENSIONE</h2>
+        {!session ? (
+          <AuthForms onAuthed={load} />
+        ) : myReview ? (
+          <div className="pixel-border p-6 bg-card/60 backdrop-blur">
+            <p className="font-mono text-sm text-muted-foreground">
+              Hai già pubblicato la tua recensione. Puoi eliminarla qui sotto se vuoi riscriverla.
+            </p>
+          </div>
+        ) : (
+          <form
+            onSubmit={submitReview}
+            className="pixel-border p-6 bg-card/60 backdrop-blur space-y-5"
+          >
+            <h2 className="font-display text-base text-primary">LASCIA UNA RECENSIONE</h2>
 
-          <div className="grid sm:grid-cols-2 gap-5">
-            <label className="block">
-              <span className="font-mono text-sm block mb-2">Nickname</span>
-              <input
-                type="text"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-                maxLength={40}
-                placeholder="Es. PixelMario99"
-                className="w-full bg-background pixel-border px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </label>
             <div>
               <span className="font-mono text-sm block mb-2">Valutazione</span>
               <StarRow value={rating} onChange={setRating} size={26} />
             </div>
-          </div>
 
-          <label className="block">
-            <span className="font-mono text-sm block mb-2">La tua recensione</span>
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              maxLength={1000}
-              rows={4}
-              placeholder="Cosa ne pensi del server?"
-              className="w-full bg-background pixel-border px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-            />
-            <span className="font-mono text-xs text-muted-foreground mt-1 block text-right">
-              {content.length}/1000
-            </span>
-          </label>
+            <label className="block">
+              <span className="font-mono text-sm block mb-2">La tua recensione</span>
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                maxLength={1000}
+                rows={4}
+                placeholder="Cosa ne pensi del server?"
+                className="w-full bg-background pixel-border px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+              />
+              <span className="font-mono text-xs text-muted-foreground mt-1 block text-right">
+                {content.length}/1000
+              </span>
+            </label>
 
-          {error && (
-            <p className="font-mono text-sm text-destructive">{error}</p>
-          )}
+            {error && <p className="font-mono text-sm text-destructive">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="font-display text-xs px-6 py-3 bg-primary text-primary-foreground pixel-border hover:translate-y-[-2px] transition-transform box-glow disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            <Send size={14} />
-            {submitting ? "INVIO..." : "PUBBLICA"}
-          </button>
-
-        </form>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="font-display text-xs px-6 py-3 bg-primary text-primary-foreground pixel-border hover:translate-y-[-2px] transition-transform box-glow disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              <Send size={14} />
+              {submitting ? "INVIO..." : "PUBBLICA"}
+            </button>
+          </form>
+        )}
       </section>
 
       {/* LIST */}
@@ -244,77 +302,100 @@ function RecensioniPage() {
         {loading && <p className="font-mono text-muted-foreground">Caricamento...</p>}
 
         {!loading && reviews.length === 0 && (
-          <p className="font-mono text-muted-foreground">
-            Nessuna recensione ancora. Sii il primo!
-          </p>
+          <p className="font-mono text-muted-foreground">Nessuna recensione ancora. Sii il primo!</p>
         )}
 
         {reviews.map((rev) => {
           const reviewReplies = repliesFor(rev.id);
-          const isStaffAuthor = rev.nickname.trim().toUpperCase() === STAFF_NICK;
+          const canDeleteReview = session && (session.user.id === rev.user_id || isAdmin);
           return (
             <article key={rev.id} className="pixel-border p-5 bg-card/60 backdrop-blur space-y-3">
               <div className="flex items-start justify-between gap-3 flex-wrap">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-display text-sm text-primary">{rev.nickname}</span>
-                  {isStaffAuthor && (
-                    <span className="font-mono text-[10px] px-2 py-1 bg-accent text-accent-foreground flex items-center gap-1">
-                      <Shield size={10} /> STAFF
-                    </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {formatDate(rev.created_at)}
+                  </span>
+                  {canDeleteReview && (
+                    <button
+                      onClick={() => deleteReview(rev.id)}
+                      className="text-destructive hover:scale-110 transition"
+                      aria-label="Elimina recensione"
+                    >
+                      <Trash2 size={14} />
+                    </button>
                   )}
                 </div>
-                <span className="font-mono text-xs text-muted-foreground">
-                  {formatDate(rev.created_at)}
-                </span>
               </div>
               <StarRow value={rev.rating} size={16} />
               <p className="font-mono text-sm whitespace-pre-wrap">{rev.content}</p>
 
               {reviewReplies.length > 0 && (
                 <div className="mt-4 pl-4 border-l-2 border-primary/40 space-y-3">
-                  {reviewReplies.map((rep) => (
-                    <div key={rep.id} className="bg-background/40 p-3">
-                      <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-display text-xs text-primary">
-                            {rep.nickname}
-                          </span>
-                          {rep.nickname.trim().toUpperCase() === STAFF_NICK && (
-                            <span className="font-mono text-[10px] px-2 py-0.5 bg-accent text-accent-foreground flex items-center gap-1">
-                              <Shield size={10} /> STAFF
+                  {reviewReplies.map((rep) => {
+                    const canDeleteReply = session && (session.user.id === rep.user_id || isAdmin);
+                    const repIsAdmin = false; // marker not used; admin badge below uses email match unavailable client-side
+                    return (
+                      <div key={rep.id} className="bg-background/40 p-3">
+                        <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-display text-xs text-primary">
+                              {rep.nickname}
                             </span>
-                          )}
+                            {rep.is_staff && (
+                              <span className="font-mono text-[10px] px-2 py-0.5 bg-accent text-accent-foreground flex items-center gap-1">
+                                <Shield size={10} /> STAFF
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-[10px] text-muted-foreground">
+                              {formatDate(rep.created_at)}
+                            </span>
+                            {canDeleteReply && (
+                              <button
+                                onClick={() => deleteReply(rep.id)}
+                                className="text-destructive hover:scale-110 transition"
+                                aria-label="Elimina risposta"
+                              >
+                                <Trash2 size={12} />
+                              </button>
+                            )}
+                          </div>
                         </div>
-                        <span className="font-mono text-[10px] text-muted-foreground">
-                          {formatDate(rep.created_at)}
-                        </span>
+                        <p className="font-mono text-sm whitespace-pre-wrap">{rep.content}</p>
                       </div>
-                      <p className="font-mono text-sm whitespace-pre-wrap">{rep.content}</p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
 
-              <div className="pt-2">
-                {replyOpen === rev.id ? (
-                  <ReplyForm
-                    reviewId={rev.id}
-                    onClose={() => setReplyOpen(null)}
-                    onPosted={() => {
-                      setReplyOpen(null);
-                      load();
-                    }}
-                  />
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => setReplyOpen(rev.id)}
-                    className="font-mono text-xs flex items-center gap-1 text-muted-foreground hover:text-primary transition"
-                  >
-                    <MessageSquare size={12} /> Rispondi
-                  </button>
-                )}
-              </div>
+              {session && (
+                <div className="pt-2">
+                  {replyOpen === rev.id ? (
+                    <ReplyForm
+                      reviewId={rev.id}
+                      userId={session.user.id}
+                      nickname={nicknameMe || session.user.email || "Utente"}
+                      onClose={() => setReplyOpen(null)}
+                      onPosted={() => {
+                        setReplyOpen(null);
+                        load();
+                      }}
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setReplyOpen(rev.id)}
+                      className="font-mono text-xs flex items-center gap-1 text-muted-foreground hover:text-primary transition"
+                    >
+                      <MessageSquare size={12} /> Rispondi
+                    </button>
+                  )}
+                </div>
+              )}
             </article>
           );
         })}
@@ -323,16 +404,130 @@ function RecensioniPage() {
   );
 }
 
+function AuthForms({ onAuthed }: { onAuthed: () => void }) {
+  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setInfo(null);
+    setBusy(true);
+    if (mode === "signup") {
+      const nick = nickname.trim();
+      if (!nick) {
+        setBusy(false);
+        return setError("Scegli un nickname.");
+      }
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/recensioni`,
+          data: { nickname: nick.slice(0, 40) },
+        },
+      });
+      setBusy(false);
+      if (error) return setError(error.message);
+      setInfo("Controlla la tua email per confermare l'account, poi torna qui.");
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      setBusy(false);
+      if (error) return setError(error.message);
+      onAuthed();
+    }
+  };
+
+  return (
+    <form onSubmit={submit} className="pixel-border p-6 bg-card/60 backdrop-blur space-y-4">
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => setMode("login")}
+          className={`font-display text-xs px-4 py-2 pixel-border ${
+            mode === "login" ? "bg-primary text-primary-foreground" : "bg-transparent"
+          }`}
+        >
+          ACCEDI
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode("signup")}
+          className={`font-display text-xs px-4 py-2 pixel-border ${
+            mode === "signup" ? "bg-primary text-primary-foreground" : "bg-transparent"
+          }`}
+        >
+          REGISTRATI
+        </button>
+      </div>
+
+      {mode === "signup" && (
+        <label className="block">
+          <span className="font-mono text-sm block mb-2">Nickname</span>
+          <input
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            maxLength={40}
+            placeholder="Es. PixelMario99"
+            className="w-full bg-background pixel-border px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </label>
+      )}
+
+      <label className="block">
+        <span className="font-mono text-sm block mb-2">Email</span>
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full bg-background pixel-border px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+      </label>
+      <label className="block">
+        <span className="font-mono text-sm block mb-2">Password</span>
+        <input
+          type="password"
+          required
+          minLength={6}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full bg-background pixel-border px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+      </label>
+
+      {error && <p className="font-mono text-sm text-destructive">{error}</p>}
+      {info && <p className="font-mono text-sm text-accent">{info}</p>}
+
+      <button
+        type="submit"
+        disabled={busy}
+        className="font-display text-xs px-6 py-3 bg-primary text-primary-foreground pixel-border hover:translate-y-[-2px] transition-transform box-glow disabled:opacity-50"
+      >
+        {busy ? "..." : mode === "login" ? "ACCEDI" : "CREA ACCOUNT"}
+      </button>
+    </form>
+  );
+}
+
 function ReplyForm({
   reviewId,
+  userId,
+  nickname,
   onClose,
   onPosted,
 }: {
   reviewId: string;
+  userId: string;
+  nickname: string;
   onClose: () => void;
   onPosted: () => void;
 }) {
-  const [nickname, setNickname] = useState("");
   const [content, setContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -340,16 +535,14 @@ function ReplyForm({
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    const nick = nickname.trim();
     const text = content.trim();
-    if (!nick) return setError("Inserisci un nickname.");
     if (!text) return setError("Scrivi una risposta.");
     setSubmitting(true);
     const { error } = await supabase.from("review_replies").insert({
       review_id: reviewId,
-      nickname: nick.slice(0, 40),
+      user_id: userId,
+      nickname: nickname.slice(0, 40),
       content: text,
-      is_staff: false,
     });
     setSubmitting(false);
     if (error) return setError("Errore: " + error.message);
@@ -358,14 +551,6 @@ function ReplyForm({
 
   return (
     <form onSubmit={submit} className="space-y-3 mt-2">
-      <input
-        type="text"
-        value={nickname}
-        onChange={(e) => setNickname(e.target.value)}
-        maxLength={40}
-        placeholder="Nickname"
-        className="w-full bg-background pixel-border px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-      />
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
